@@ -2,16 +2,12 @@
 using GymDiaryAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GymDiaryAPI.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class UsersController : ControllerBase
+    public class UsersController : BaseApiController
     {
         private readonly ApplicationContext _context;
 
