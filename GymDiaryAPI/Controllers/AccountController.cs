@@ -1,5 +1,6 @@
 ﻿using GymDiaryAPI.DTOs;
 using GymDiaryAPI.Entities;
+using GymDiaryAPI.Interfaces;
 using GymDiaryAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,15 +12,17 @@ namespace GymDiaryAPI.Controllers
 {
     public class AccountController : BaseApiController
     {
+        private readonly ITokenService _tokenService;
         private readonly ApplicationContext _context;
 
-        public AccountController(ApplicationContext context)
+        public AccountController(ApplicationContext context, ITokenService tokenService)
         {
             _context = context;
+            _tokenService = tokenService;
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<User>> Register([FromBody] RegisterDto registedDto)
+        public async Task<ActionResult<UserDto>> Register([FromBody] RegisterDto registedDto)
         {
             if (await IsUserExist(registedDto.Username)) 
             {
@@ -41,11 +44,15 @@ namespace GymDiaryAPI.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return user;
+            return new UserDto
+            {
+                UserName = user.UserName,
+                Token = _tokenService.CreateToken(user)
+            };
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<User>> Login([FromBody] LoginDto loginDto)
+        public async Task<ActionResult<UserDto>> Login([FromBody] LoginDto loginDto)
         {
             var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.Username);
 
@@ -66,7 +73,11 @@ namespace GymDiaryAPI.Controllers
                 }
             }
 
-            return user;
+            return new UserDto
+            {
+                UserName = user.UserName,
+                Token = _tokenService.CreateToken(user)
+            };
         }
 
         private async Task<bool> IsUserExist(string username)

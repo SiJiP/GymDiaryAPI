@@ -1,5 +1,6 @@
 ﻿using GymDiaryAPI.Entities;
 using GymDiaryAPI.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace GymDiaryAPI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<User>>> GetUsersAsync() 
         {
             var users = await _context.Users.ToListAsync();
@@ -24,6 +26,7 @@ namespace GymDiaryAPI.Controllers
             return users;
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUserById(int id)
         {
