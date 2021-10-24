@@ -1,36 +1,44 @@
-﻿using GymDiaryAPI.Entities;
+﻿using AutoMapper;
+using GymDiaryAPI.DTOs;
 using GymDiaryAPI.Repositories;
+using GymDiaryAPI.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using GymDiaryAPI.BusinessLayers.Interfaces;
 
 namespace GymDiaryAPI.Controllers
 {
+    [Authorize]
     public class UsersController : BaseApiController
     {
-        private readonly ApplicationContext _context;
+        private readonly IUserBl _userBl;
 
-        public UsersController(ApplicationContext context)
-        {
-            _context = context;
-        }
+        public IUnitOfWork _unitOfWork { get; }
+
+    public UsersController(IUnitOfWork unitOfWork, IUserBl userBl)
+    {
+        _userBl = userBl;
+        _unitOfWork = unitOfWork;
+    }
 
         [HttpGet]
-        [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsersAsync() 
+        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsersAsync() 
         {
-            var users = await _context.Users.ToListAsync();
+            IEnumerable<MemberDto> members = await _userBl.GetMembersAsync();
 
-            return users;
+
+            return Ok(members);
         }
 
-        [Authorize]
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUserById(int id)
+        public async Task<ActionResult<MemberDto>> GetUserById(int id)
         {
-            return await _context.Users.FirstOrDefaultAsync(user => user.Id == id);
+            var user = await _unitOfWork.UserRepository.GetMemberByIdAsync(id);
+
+            return user;
         }
     }
+
 }

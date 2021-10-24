@@ -3,14 +3,16 @@ using System;
 using GymDiaryAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GymDiaryAPI.Repositories.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20211007050042_AddedExercisesEntity")]
+    partial class AddedExercisesEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,9 +61,6 @@ namespace GymDiaryAPI.Repositories.Migrations
                     b.Property<int>("DiaryId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Name")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("NumberOfApproaches")
                         .HasColumnType("INTEGER");
 
@@ -78,7 +77,7 @@ namespace GymDiaryAPI.Repositories.Migrations
 
                     b.HasIndex("DiaryId");
 
-                    b.ToTable("Exercises");
+                    b.ToTable("Exercise");
                 });
 
             modelBuilder.Entity("GymDiaryAPI.Entities.User", b =>

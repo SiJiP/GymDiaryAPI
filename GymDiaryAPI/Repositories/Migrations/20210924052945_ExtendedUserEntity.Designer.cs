@@ -3,14 +3,16 @@ using System;
 using GymDiaryAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GymDiaryAPI.Repositories.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20210924052945_ExtendedUserEntity")]
+    partial class ExtendedUserEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,40 +47,6 @@ namespace GymDiaryAPI.Repositories.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Diaries");
-                });
-
-            modelBuilder.Entity("GymDiaryAPI.Entities.Exercise", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("DiaryId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Name")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("NumberOfApproaches")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("NumberOfRepetitions")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Weight")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DiaryId");
-
-                    b.ToTable("Exercises");
                 });
 
             modelBuilder.Entity("GymDiaryAPI.Entities.User", b =>
@@ -126,20 +94,6 @@ namespace GymDiaryAPI.Repositories.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("GymDiaryAPI.Entities.Exercise", b =>
-                {
-                    b.HasOne("GymDiaryAPI.Entities.Diary", null)
-                        .WithMany("Exercises")
-                        .HasForeignKey("DiaryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("GymDiaryAPI.Entities.Diary", b =>
-                {
-                    b.Navigation("Exercises");
                 });
 
             modelBuilder.Entity("GymDiaryAPI.Entities.User", b =>

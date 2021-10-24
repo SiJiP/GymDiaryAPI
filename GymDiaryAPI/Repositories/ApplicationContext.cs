@@ -11,5 +11,6 @@ namespace GymDiaryAPI.Repositories
 
         public DbSet<User> Users { get; set; }
         public DbSet<Diary> Diaries { get; set; }
+        public DbSet<Exercise> Exercises { get; set; }
     }
 }

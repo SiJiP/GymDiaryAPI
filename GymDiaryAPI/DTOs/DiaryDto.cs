@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace GymDiaryAPI.Entities
+namespace GymDiaryAPI.DTOs
 {
-    public class Diary
+    public class DiaryDto
     {
         public int Id { get; set; }
         public string DiaryName { get; set; }

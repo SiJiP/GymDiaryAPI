@@ -7,48 +7,39 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using GymDiaryAPI.BusinessLayers.Interfaces;
+using GymDiaryAPI.Common.Messages;
 
 namespace GymDiaryAPI.Controllers
 {
     public class AccountController : BaseApiController
     {
         private readonly ITokenService _tokenService;
+        private readonly IAccountBl _accountBl;
         private readonly ApplicationContext _context;
 
-        public AccountController(ApplicationContext context, ITokenService tokenService)
+        public AccountController(ApplicationContext context, ITokenService tokenService, IAccountBl accountBl)
         {
             _context = context;
             _tokenService = tokenService;
+            _accountBl = accountBl;
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> Register([FromBody] RegisterDto registedDto)
+        public async Task<ActionResult<UserDto>> Register([FromBody] RegisterDto registerDto)
         {
-            if (await IsUserExist(registedDto.Username)) 
+            if (await _accountBl.IsUserExist(registerDto.Username)) 
             {
                 return BadRequest("Username is taken");
             }
 
-            using var hmac = new HMACSHA512();
+            Task<UserDto> userDto = _accountBl.CreateUser(registerDto);
 
-            var user = new User
-            {
-                FirstName = registedDto.Firstname,
-                LastName = registedDto.Lastname,
-                UserName = registedDto.Username.ToLower(),
-                DateBirth = registedDto.DateBirth,
-                PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registedDto.Password)),
-                PasswordSalt = hmac.Key
-            };
-
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-            return new UserDto
-            {
-                UserName = user.UserName,
-                Token = _tokenService.CreateToken(user)
-            };
+            return Ok(new ResponseObjectMessage<Task<UserDto>>
+                {
+                    Result = userDto,
+                    Message = $"User { registerDto.Username } successfully created"
+                });
         }
 
         [HttpPost("login")]
