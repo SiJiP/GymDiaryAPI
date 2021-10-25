@@ -1,9 +1,7 @@
 ﻿using GymDiaryAPI.DTOs;
-using GymDiaryAPI.Entities;
 using GymDiaryAPI.Interfaces;
 using GymDiaryAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,17 +33,20 @@ namespace GymDiaryAPI.Controllers
 
             Task<UserDto> userDto = _accountBl.CreateUser(registerDto);
 
-            return Ok(new ResponseObjectMessage<Task<UserDto>>
-                {
-                    Result = userDto,
-                    Message = $"User { registerDto.Username } successfully created"
-                });
+            return 
+                Ok(
+                    new ResponseObjectMessage<Task<UserDto>>
+                    {
+                        Result = userDto,
+                        Message = $"User { registerDto.Username } successfully created"
+                    }
+                );
         }
 
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login([FromBody] LoginDto loginDto)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.Username);
+            var user = await _accountBl.GetUserByUserName(loginDto.Username);
 
             if (user == null) 
             {
@@ -69,11 +70,6 @@ namespace GymDiaryAPI.Controllers
                 UserName = user.UserName,
                 Token = _tokenService.CreateToken(user)
             };
-        }
-
-        private async Task<bool> IsUserExist(string username)
-        {
-            return await _context.Users.AnyAsync(user => user.UserName == username.ToLower());
         }
     }
 }

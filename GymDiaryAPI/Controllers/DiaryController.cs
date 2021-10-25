@@ -1,9 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using GymDiaryAPI.BusinessLayers.Constants;
+using GymDiaryAPI.BusinessLayers.Interfaces;
+using GymDiaryAPI.Common.Interfaces;
+using GymDiaryAPI.Common.Messages;
 using GymDiaryAPI.DTOs;
 using GymDiaryAPI.Entities;
-using GymDiaryAPI.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GymDiaryAPI.Controllers
@@ -11,34 +16,53 @@ namespace GymDiaryAPI.Controllers
     [Authorize]
     public class DiaryController : BaseApiController
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private IDiaryBl _diaryBl;
 
-        public DiaryController(IUnitOfWork unitOfWork)
+        public DiaryController(IDiaryBl diaryBl)
         {
-            _unitOfWork = unitOfWork;
+            _diaryBl = diaryBl;
         }
 
-        [HttpGet("id")]
+        [HttpGet("id/Diary")]
         public async Task<ActionResult<DiaryDto>> GetDiaryByIdAsync(int id)
         {
-            var diary = await _unitOfWork.DiaryRepository.GetDiaryByIdAsync(id);
+            DiaryDto diary = await _diaryBl.GetDiaryById(id); 
 
             return Ok(diary);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Diary>> CreateDiary([FromBody] DiaryDto diaryDto)
+        [HttpGet("id/ByUser")]
+        public async Task<ActionResult<DiaryDto>> GetDiariesByUserIdAsync(int id)
         {
-            var diary = new Diary 
-            {
-                DiaryName = diaryDto.DiaryName,
-                UserId = diaryDto.UserId,
-                OwnerId = diaryDto.OwnerId,
-                IsPrimary = diaryDto.IsPrimary,
-                LastUpdateDate = DateTime.Now
-            };
+            IList<DiaryDto> diaries = await _diaryBl.GetDiariesByUserId(id);
 
-            return await _unitOfWork.DiaryRepository.CreateDiaryAsync(diary);
-        } 
+            return Ok(diaries);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<IResponseMessage>> CreateDiary([FromBody] DiaryDto diaryDto)
+        {
+            var res = await _diaryBl.CreateDiary(diaryDto);
+
+            if (res != null)
+            {
+                return Ok(res);
+            }
+
+            return BadRequest(new ResponseMessage { Message = Messages.EntityNotFound(nameof(Diary)) });
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<IResponseMessage>> UpdateDiary([FromBody] DiaryDto diaryDto)
+        {
+            var res = await _diaryBl.UpdateDiary(diaryDto);
+
+            if (res != null)
+            {
+                return Ok(res);
+            }
+
+            return BadRequest(new ResponseMessage { Message = Messages.EntityNotFound(nameof(Diary)) });
+        }
     }
 }

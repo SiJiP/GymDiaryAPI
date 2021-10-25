@@ -6,9 +6,14 @@ namespace GymDiaryAPI.Repositories.Interfaces
 {
     public interface IDiaryRepository
     {
-        void Update(Diary diary);
+        Task<Diary> UpdateDiaryAsync(Diary diary);
+        
         Task<Diary> GetDiaryByIdAsync(int id);
 
+        Task<IList<Diary>> GetDiariesByUserId(int id);
+
         Task<Diary> CreateDiaryAsync (Diary diary);
+
+        Task<Diary> DeleteDiaryAsync(int id);
     }
 }

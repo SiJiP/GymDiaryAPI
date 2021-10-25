@@ -45,16 +45,16 @@ namespace GymDiaryAPI.BusinessLayers
 
         }
 
-        public Task<UserDto> SignIn(LoginDto loginDto)
-        {
-            throw new System.NotImplementedException();
-        }
-
         public async Task<bool> IsUserExist(string username)
         {
             var user = await UnitOfWork.UserRepository.GetUserByUsernameAsync(username);
 
             return user != null;
         }
-    }
+
+        public async Task<User> GetUserByUserName(string username)
+        {
+            return await UnitOfWork.UserRepository.GetUserByUsernameAsync(username);
+        }
+  }
 }

@@ -17,7 +17,7 @@ namespace GymDiaryAPI.Repositories
 
     public IUserRepository UserRepository => new UserRepository(_context, _mapper);
 
-    public IDiaryRepository DiaryRepository => new DiaryRepository(_context, _mapper);
+    public IDiaryRepository DiaryRepository => new DiaryRepository(_context);
 
     public IExerciseRepository ExerciseRepository => new ExerciseRepository(_context, _mapper);
 

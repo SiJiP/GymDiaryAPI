@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace GymDiaryAPI.Extensions
 {
@@ -25,6 +26,8 @@ namespace GymDiaryAPI.Extensions
 
             // Business Layers
             services.AddScoped<IAccountBl, AccountBl>();
+            services.AddScoped<IUserBl, UserBl>();
+
 
             // Database
             services.AddDbContext<ApplicationContext>(options =>
@@ -35,13 +38,31 @@ namespace GymDiaryAPI.Extensions
             // Swagger
             services.AddSwaggerGen(swagger =>
             {
-                swagger.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Title = "Gym Diary API",
-                    Version = "1.0.0",
-                    Description = "API for Gym Diary App"
+                swagger.SwaggerDoc("v1", new OpenApiInfo { Title = "Gym Diary API", Version = "1.0.0" });
 
-                });
+                var securityScheme = new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                };
+
+                swagger.AddSecurityDefinition("Bearer", securityScheme);
+
+                var securityRequirement = new OpenApiSecurityRequirement
+                {
+                    { securityScheme, new[] { "Bearer" } }
+                };
+
+                swagger.AddSecurityRequirement(securityRequirement);
+
             });
 
             return services;

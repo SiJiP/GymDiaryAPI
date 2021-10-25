@@ -43,8 +43,10 @@ namespace GymDiaryAPI.Repositories
 
         public async Task<User> GetUserByUsernameAsync(string username)
         {
-            return await _context.Users
+            var user = await _context.Users
                 .SingleOrDefaultAsync(x => x.UserName.ToLower() == username.ToLower());
+            
+            return user;
         }
 
         public void Update(User user)

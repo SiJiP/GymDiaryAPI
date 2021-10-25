@@ -27,7 +27,7 @@ namespace GymDiaryAPI.Controllers
         public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsersAsync() 
         {
             IEnumerable<MemberDto> members = await _userBl.GetMembersAsync();
-
+            var value = User.Identity;
 
             return Ok(members);
         }

@@ -74,7 +74,7 @@ namespace GymDiaryAPI.Repositories
         if (elementForUpdate != null)
         {
             _context.Exercises.Update(exercise);
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return exercise;
         }

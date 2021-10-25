@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using GymDiaryAPI.DTOs;
+using GymDiaryAPI.Entities;
 
 namespace GymDiaryAPI.BusinessLayers.Interfaces
 {
@@ -7,8 +8,8 @@ namespace GymDiaryAPI.BusinessLayers.Interfaces
     {
         Task<UserDto> CreateUser(RegisterDto registerDto);
 
-        Task<UserDto> SignIn(LoginDto loginDto);
-
         Task<bool> IsUserExist(string username);
+
+        Task<User> GetUserByUserName(string username);
     }
 }
