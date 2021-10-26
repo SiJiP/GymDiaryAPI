@@ -16,7 +16,7 @@ namespace GymDiaryAPI.Controllers
     [Authorize]
     public class DiaryController : BaseApiController
     {
-        private IDiaryBl _diaryBl;
+        private readonly IDiaryBl _diaryBl;
 
         public DiaryController(IDiaryBl diaryBl)
         {

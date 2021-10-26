@@ -27,6 +27,7 @@ namespace GymDiaryAPI.Extensions
             // Business Layers
             services.AddScoped<IAccountBl, AccountBl>();
             services.AddScoped<IUserBl, UserBl>();
+            services.AddScoped<IDiaryBl, DiaryBl>();
 
 
             // Database

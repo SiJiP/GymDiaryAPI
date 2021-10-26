@@ -11,7 +11,7 @@ namespace GymDiaryAPI.BusinessLayers
 {
     public class DiaryBl : BaseBl, IDiaryBl
     {
-        protected DiaryBl(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        public DiaryBl(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {
         }
 
